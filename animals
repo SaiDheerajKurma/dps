@@ -1,0 +1,83 @@
+import random
+
+class Player:
+    def __init__(self, name, icon):
+        self.name = name
+        self.position = 1
+        self.icon = icon
+
+    def move(self, steps):
+        self.position += steps
+
+    def display_icon(self):
+        print(f"{self.name}'s turn ({self.icon})")
+
+
+def display_board(player):
+    print("Jungle Adventure Snakes and Ladders")
+    print("+" + "-" * 28 + "+")
+    for row in range(9, 0, -1):
+        for col in range(1, 11):
+            if (row + col) % 2 == 0:
+                square_num = row * 10 - col + 1
+            else:
+                square_num = row * 10 + col
+            if square_num == player.position:
+                print("| " + player.icon + " ", end="")
+            else:
+                print("| {:2}".format(square_num), end="")
+        print("|")
+    print("+" + "-" * 28 + "+")
+
+
+def roll_dice():
+    input("Press Enter to roll the dice...")
+    return random.randint(1, 6)
+
+
+def check_snakes_and_ladders(position):
+    snakes_and_ladders = {
+        16: 6,
+        47: 26,
+        49: 11,
+        56: 53,
+        62: 19,
+        64: 60,
+        87: 24,
+        93: 73,
+        95: 75,
+        98: 78
+    }
+    if position in snakes_and_ladders:
+        return snakes_and_ladders[position]
+    return position
+
+
+def main():
+    print("Welcome to the Jungle Adventure Snakes and Ladders!")
+
+    # Set up players
+    num_players = int(input("Enter the number of players: "))
+    players = []
+    for i in range(num_players):
+        name = input(f"Enter name for Player {i + 1}: ")
+        icon = input(f"Choose an animal icon for {name} (e.g., 🦁, 🐘, 🦒): ")
+        player = Player(name, icon)
+        players.append(player)
+
+    while True:
+        for player in players:
+            display_board(player)
+            player.display_icon()
+            dice_roll = roll_dice()
+            print(f"{player.name} rolled a {dice_roll}")
+            player.move(dice_roll)
+            player.position = check_snakes_and_ladders(player.position)
+
+            if player.position == 100:
+                display_board(player)
+                print(f"Congratulations! {player.name} has reached the end. {player.name} wins!")
+                return
+
+if __name__ == "__main__":
+    main()
